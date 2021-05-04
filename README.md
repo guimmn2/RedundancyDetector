@@ -1,0 +1,2 @@
+# RedundancyDetector
+Detects redundancies
