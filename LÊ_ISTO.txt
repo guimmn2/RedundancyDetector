@@ -1,0 +1,4 @@
+para fazeres pull do branch tens de fazer:
+
+git fetch origin development:development (aqui basta escrever origin, depois dev e clicar no tab para fazer "auto-complete")
+isto depois cria o banch development em sintonia com o github
