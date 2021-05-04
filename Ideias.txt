@@ -1,0 +1,14 @@
+SERVE PARA EXPÔR AS IDEIAS
+
+Vasco Araújo 04/05
+
+Conceito: Implementar binary search para encontrar no array a primeira letra igual à chave;
+Exemplo: binary search em que string[] = 'abracadabra';
+         ter uma variável highestcount para guardar o maior número de caracteres repetidos de seguida;
+         'key' = string[0] = 'a';
+         encontrar mid tal que:
+         string[mid] = 'a';
+         e ir comparando os valores a seguir (string[0+i] e string[mid+i])
+         contando cada igualdade encontrada de seguida (n = contagem);
+         se n > highestcount então copia a string toda lida para um outro array (highredundancy[]);
+         no final retornar highredundancy[];
