@@ -1,116 +1,78 @@
-import java.util.Scanner;
+import java.util.*;
+import java.math.*;
 
-class RedundancyDetector {
+public class RedundancyDetector {
+	
+	
+	//No enunciado diz que o ponto de partida deve ser desenvolver um algoritmo de força bruta que verifica 
+	//o comprimento da correspondência (?) em cada par possível de posições iniciais
+	//whatever that means...
+	
+	//se considerarmos qualquer string de tamanho N, o nº de pares possíveis é N*N-1
 
-// Apenas procura o caracter igual ao da chave
-// array_search - array para procurar o caracter igual
-// key - o caracter de referência
-// current_index+1 - o indíce apartir de onde se começa à procura (adiciona-se 1 para evitar procurar exatamente onde está a key, ficando num loop infinito)
-
-	private static int findEqualChar(char[] array_search, char key, int current_index){
-		int i = current_index + 1;
-		while(i <= array_search.length-1){
-			System.out.println("Array_search["+i+"] ="+array_search[i]);
-			if(array_search[i] == key)
-				return i;
-			i++;
+	
+	//vamos exprimentar coisas!
+	
+	public static void main(String[] args){
+		Scanner s = new Scanner(System.in);
+		String str = "";
+		
+		str = s.nextLine();
+		
+		char[] char_array = str.toCharArray();
+						
+		printAllSubstrings(char_array);
+//		substringArray(char_array);
+		s.close();
+	}
+	
+	//IMPORTANTE : CONSIDERA-SE QUE O COMPRIMENTO MÍNIMO DE UMA SUBSTRING É DE 2
+	//ex: abc -> {ab, abc, bc}
+	
+	//método de força bruta que faz print de todos os possíveis substrings dado um array de caracteres
+	public static void printAllSubstrings(char[] string){
+		
+		int tempCounter = 0;
+		
+		for(int i = 0; i < string.length; i++){
+			for(int j = i + 1; j < string.length; j++){
+				for(int k = i; k <= j; k++){
+					System.out.print(string[k]);
+				}
+				System.out.println("");
+				tempCounter ++;
+			}
 		}
-		return -1;
+		System.out.println(tempCounter);
 	}
-
-
-// Só para fazer resize conforme necessário
-// array_resize - array para aumentar de tamanho
-// resize_factor - fator de multiplicação para calcular tamanho
-
-	private static char[] resizeArray(char[] array_resize, int resize_factor){
-		int resized_length = array_resize.length * resize_factor;
-		char[] resizedarray = new char[resized_length];
-		for(int i=0; i < array_resize.length; i++ )
-			resizedarray[i]=array_resize[i];
-		return resizedarray;
-	}
-
-// Procura a maior string repetida
-// array_search - array para procurar
-// higheststring - a string mais longa redundante
-// highestcount - o maior número de caracteres da higheststring
-
-	private static String charStreak(char[] array_search, String higheststring, int highestcount){
-    //count_from_index - offset para andar com a key no array
-    // fecresult - indíce do character igual encontrado
-    // ambas são incializadas a 0 para poder correr do início
-
-    int count_from_index=0;
-		int fecresult=0;
-		int al = array_search.length;
-
-
-		for(int array_index = 0; array_index < al; array_index+=count_from_index){
-      // Necessário igualar o fecresult ao array_index para estarmos sempre a procurar apartir da key
-      // Necessário igual o count_from_index a 1 para podermos sempre mudar de key
-			fecresult=array_index;
-			count_from_index=1;
-
-      // o fecresult apenas é menor que 0 se for -1 ou seja não foi encontrado caracter igual
-			while(fecresult < al && fecresult >= 0){
-				fecresult = findEqualChar(array_search, array_search[array_index], fecresult);
-				if(fecresult != -1){
-					System.out.println("Found equal char at "+fecresult+" "+array_search[fecresult]);
-
-          // tempcount - contagem temporária do número da sequência de caracteres iguais
-          // offset - para podermos percorrer array tanto na key como no caracter igual encontrado
-          // substringchar - para guardar a sequência de caracteres iguais
-					int tempcount=1;
-					int offset=1;
-					char[] substringchar = new char[4];
-          //  Como para entrar aqui foi encontrado pelo menos um caracter igual então esse caracter guardasse na primeira posição do vetor substringchar
-					substringchar[0] = array_search[fecresult];
-          // fecresult+offset - índice para comparar com array_index+offset
-					while(fecresult+offset < al && array_index+offset < al && array_search[fecresult+offset]==array_search[array_index+offset]){
-            substringchar[offset]=array_search[array_index+offset];
-						tempcount++;
-						offset++;
-            // se o array estiver cheio praticamente
-						if(offset == substringchar.length)
-							substringchar = resizeArray(substringchar, 2);
-					}
-          // guarda no count_from_index o valor de tempcount (numero de caracteres seguidos iguais) apenas se este for maior do que o que estava antes, ou seja garante que apenas é guardado o valor máximo de sequência de caracteres
-					if(tempcount>count_from_index)
-						count_from_index=tempcount;
-
-          // se o tempcount for mais que o highestcount (número de caracteres da string mais longa guardada), substitui a antiga higheststring pela nova higheststring
-					if(tempcount > highestcount){
-						higheststring = String.valueOf(substringchar);
-						highestcount = tempcount;
-					}
+	
+	//precisamos primeiro de saber quais são as substrings que se repetem
+	//em segundo lugar, das que se repetem, qual a maior
+	
+	//uma forma de resolver isto seria ordenar todas as strings por ordem alfabética
+	//assim sempre que houvesse pelo menos uma parelha essa string é guardada num array
+	
+	
+	public static String[] substringArray(char[] string){
+		
+		//sabemos que existem, para um string de length N, N*[(N+1)/2 - 1] substrings de length mínima de 2.
+		int N = string.length;
+		int len = N*((N+1)/2 - 1);
+		char aux;
+		
+		String[] sub = new String[len];
+		
+		for(int i = 0; i < string.length; i++){
+			for(int j = i + 1; j < string.length; j++){
+				for(int k = i; k <= j; k++){
+					//System.out.print(string[k]);
+					//OBJECTIVO: passar todas as substrings que consegui fazer print com a func anterior
+					//para um array de Strings
 				}
 			}
 		}
-    // Após percorrer o array todo retorna a higheststring
-		return higheststring;
 	}
-
-  // Só driver code
-	public static void main(String[] args){
-		String s="";
-		String higheststring="";
-		int highestcount = 0;
-		System.out.println("Type something");
-		Scanner in = new Scanner(System.in);
-
-		s = in.nextLine();
-		in.close();
-		char[] mainarray = s.toCharArray();
-
-		// Um pequeno debug só para ver se a string foi convertida para char array corretamente
-		for (int i=0; i < mainarray.length; i++)
-			System.out.println("char at "+i+" is "+mainarray[i]);
-
-		System.out.println("Char array length is "+mainarray.length);
-		higheststring = charStreak(mainarray, higheststring, highestcount);
-    // Problema a higheststring aqui pode ou não conter caracteres nulos/lixo, como resolver? gostava de saber...
-		System.out.println("Longest redundant string: "+higheststring);
-
-	}
+	
+	
+	
 }
