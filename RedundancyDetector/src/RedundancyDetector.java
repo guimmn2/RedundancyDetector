@@ -24,7 +24,7 @@ public class RedundancyDetector {
 		System.out.println(test);
 		System.out.println(read(test,0,2));
 		
-		String[] arr = divideIntoSubstrings(given);
+//		String[] arr = divideIntoSubstrings(given);
 		
 		
 		
@@ -39,22 +39,53 @@ public class RedundancyDetector {
 		char[] aux = a.toCharArray();
 		
 		int factor = 2; //começa por dividir array em 2
-		int limit = (int)((aux.length / factor) - 1);
+		int limitSize = (int)((aux.length / factor) - 1);
+		Queue<String> q = new LinkedList<String>();
+		
+		for(int i = 0; limitSize > 0; i += factor){
+			
+			String substr = read(aux,i,limitSize);
+			String currentKey = substr; //primeira substring de tamanho len/factor
+			
+			q.add(substr); //adiciona a substring à fila para ser comparada.
+			
+		}
 		
 		
 	}
 	
-	private static char[] read(char[] arr, int base, int limit){
+	private static String compareSubstrs(Queue<String> q){
+		
+		String key = "";
+		
+		for(int i = 0; i < q.size(); i++){
+			String aux = q.remove();
+			System.out.println(key);
+			for(int j = i + 1; j < q.size(); j++){
+				
+				int cmp = key.compareTo(q.remove());
+				
+				if(cmp == 0) { key = aux; break; }
+				
+			}
+		}
+		return key;
+	}
+	
+	
+	//devolve uma substring dada uma base e um limite de leitura (um pouco como um fseek)
+	private static String read(char[] arr, int base, int limit){
 		
 		//lê da base até ao indice limite, inclusive
 		
 		if(base + limit > arr.length - 1) throw new IllegalStateException("extensão demasiado longa, fora do array!");
 		
-		if(limit < base) throw new IllegalStateException("limit tem de ser maior que a base!");
+		else if(limit < base) throw new IllegalStateException("limit tem de ser maior que a base!");
 		
-		if(base == limit){
+		else if(base == limit){
 			char[] one = {arr[base]};
-			return one;
+			String res = String.valueOf(one);
+			return res;
 		}
 		
 		Queue<Character> s = new LinkedList<Character>();
@@ -67,7 +98,8 @@ public class RedundancyDetector {
 			read[i] = s.remove();
 		}
 		
-		return read;
+		String res = String.valueOf(read);
+		return res;
 		
 	}
 	
