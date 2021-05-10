@@ -11,32 +11,8 @@ public class RedundancyDetector {
 	
 	
 	
-	//implementar uma stack de strings para serem guardadas dinâmicamente sem ter que reccorer a resizes de arrays
 	
-	private Node first = null;
-	int size; //nr de componentes
-	
-	private class Node{
-		
-		Node next;
-		String item;
-		
-	}
-	
-	private void push(String item){
-		Node oldfirst = first;
-		first = new Node();
-		first.next = oldfirst;
-		first.item = item;
-		size ++;
-	}
-	
-	private String pop(){
-		String item = first.item;
-		first = first.next;
-		size --;
-		return item;
-	}
+
 	
 	public static void main(String[] args){
 		
@@ -46,7 +22,7 @@ public class RedundancyDetector {
 		char[] test = given.toCharArray();
 		
 		System.out.println(test);
-		System.out.println(read(test,0,0));
+		System.out.println(read(test,0,2));
 		
 		String[] arr = divideIntoSubstrings(given);
 		
@@ -62,26 +38,8 @@ public class RedundancyDetector {
 		
 		char[] aux = a.toCharArray();
 		
-		int factor = 2;
+		int factor = 2; //começa por dividir array em 2
 		int limit = (int)((aux.length / factor) - 1);
-		RedundancyDetector s = new RedundancyDetector(); //inicializa a stack
-		
-		while(factor-- > 0){
-			for(int i = 0; i < aux.length; i += factor){
-				String temp = read(aux,i,limit).toString();
-				System.out.println(temp);
-				s.push(temp);
-				 
-				
-			}
-			
-		}
-		String[] subStr = new String[s.size];
-		for(int i = 0; i < s.size; i++){
-			subStr[i] = s.pop();
-		}
-		
-		return subStr;
 		
 		
 	}
@@ -90,13 +48,23 @@ public class RedundancyDetector {
 		
 		//lê da base até ao indice limite, inclusive
 		
-//		if(base + limit > arr.length -1) throw new IllegalStateException("Out of bounds");
-//		if(base < 0 || limit < 0) throw new IllegalArgumentException("indices < 0 !");
+		if(base + limit > arr.length - 1) throw new IllegalStateException("extensão demasiado longa, fora do array!");
 		
-		char[] read = new char[limit - base + 1];
+		if(limit < base) throw new IllegalStateException("limit tem de ser maior que a base!");
 		
+		if(base == limit){
+			char[] one = {arr[base]};
+			return one;
+		}
+		
+		Queue<Character> s = new LinkedList<Character>();
+		for(int i = base; i <= limit; i++){
+			s.add(arr[i]);
+		}
+		
+		char[] read = new char[s.size()];
 		for(int i = 0; i < read.length; i++){
-			read[i] = arr[base+i];
+			read[i] = s.remove();
 		}
 		
 		return read;
