@@ -42,7 +42,7 @@ public class RedundancyDetector {
 		
 		Queue<String> q = new LinkedList<String>();
 		
-		for(int i = 0; i <= aux.length; i+= subStrSize){ 
+		for(int i = 0; i < aux.length; i+= subStrSize){ 
 			System.out.println("iterator is: " + i);
 			String temp = read(s,i,subStrSize);
 			System.out.println("adding to queue: " + temp);
