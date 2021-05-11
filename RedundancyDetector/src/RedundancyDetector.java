@@ -42,7 +42,7 @@ public class RedundancyDetector {
 		
 		Queue<String> q = new LinkedList<String>();
 		
-		for(int i = 0; i < aux.length; i+= subStrSize){ 
+		for(int i = 0; i < aux.length - subStrSize; i+= subStrSize){ 
 			System.out.println("iterator is: " + i);
 			String temp = read(s,i,subStrSize);
 			System.out.println("adding to queue: " + temp);
@@ -65,27 +65,8 @@ public class RedundancyDetector {
 		if(offset < 0) throw new IllegalStateException("offset tem que ser positivo!");
 		else if(base > arr.length - 1) throw new IllegalStateException("base fora do array!");
 		
-		else if(base + offset > arr.length)
-		{
-			//n consegui fazer isto recursivo pq n percebo recursão...
-			//ideia: read(s,base,arr.length -1) (=) lê da base até ao fim
-//			System.out.println("ESTAMOS NAQUELE ELSE IF QUE LÊ ATÉ AO FIM!");
-			for(int i = base; i < arr.length; i++){
-				System.out.println(arr[i]);
-				q.add(arr[i]);
-				
-			}
+		else if(base + offset > arr.length) throw new IllegalStateException("out of bounds!");
 			
-			char[] aux = new char[q.size()];
-			for(int i = 0; i < aux.length; i++){
-				aux[i] = q.remove();
-			}
-			
-			res = String.valueOf(aux);
-			
-		}
-		
-		
 		else {
 			
 //			System.out.println("AGORA ESTAMOS NO ELSE QUE N TEM IF!");
