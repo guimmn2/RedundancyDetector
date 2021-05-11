@@ -3,104 +3,114 @@ import java.math.*;
 
 public class RedundancyDetector {
 	
-	//IDEIA: Dividir string em strings incrementalmente mais pequenas dependendo da condição se são encontradas substrings
-	//redundantes ou não. Ex: string "banana"
-							//"ban" ; "ana" (key = "ban"; key != "ana" => divide)
-							//"ba" ; "na" ; "na" =>
-							// => (key = "ba"; key != "na"1; key != "na"2 => key = "na"1; key = "na"2 => devolve na)
-	
-	
-	
-	
-
+	/* IDEIA GERAL: Dividir String em substrings incrementalmente mais pequena, enquanto não se encontra a
+	 * maior string redundante possível.
+	 * 
+	 * I - Dividir String em substrings e guardá-las numa estrutura (talvez uma queue, ou um binary heap???)
+	 * Ia - Opcionalmente guardar apenas as que se repetem ???
+	 * IIa - Opcionalmente ordenar se custo de operação valer a pena, para ser mais fácil procurar e comparar substrings
+	 * IIb - Comparar substrings até encontrar um match.
+	 * III - Devolver substring (atenção: verificar caso em que há mais de uma string redundante com o mesmo tamanho)
+	 */
 	
 	public static void main(String[] args){
 		
 		Scanner in = new Scanner(System.in);
 		
-		String given = in.nextLine();
-		char[] test = given.toCharArray();
+		//pede a String
+		String test = in.nextLine();
+		int factor = in.nextInt();
 		
-		System.out.println(test);
-		System.out.println(read(test,0,2));
+		//System.out.println(read(test,0,3));
 		
-//		String[] arr = divideIntoSubstrings(given);
+		Queue<String> q = divideInto(factor,test);
+		System.out.println(q.toString());
 		
-		
-		
+//		System.out.println(read(test,4,3));
 		
 		in.close();
 		
 		
 	}
 	
-	private static String[] divideIntoSubstrings(String a){
+	//função de teste para obter um "feel" da computação envolvida para dividir a string em todas as substrings
+	private static Queue<String> divideInto(int factor, String s){
 		
-		char[] aux = a.toCharArray();
+		char[] aux = s.toCharArray();
+		int subStrSize = (int)(aux.length / factor);
+		System.out.println(subStrSize);
 		
-		int factor = 2; //começa por dividir array em 2
-		int limitSize = (int)((aux.length / factor) - 1);
 		Queue<String> q = new LinkedList<String>();
 		
-		for(int i = 0; limitSize > 0; i += factor){
-			
-			String substr = read(aux,i,limitSize);
-			String currentKey = substr; //primeira substring de tamanho len/factor
-			
-			q.add(substr); //adiciona a substring à fila para ser comparada.
-			
+		for(int i = 0; i <= aux.length; i+= subStrSize){ 
+			System.out.println("iterator is: " + i);
+			String temp = read(s,i,subStrSize);
+			System.out.println("adding to queue: " + temp);
+			q.add(temp);
 		}
-		
+		return q;
 		
 	}
 	
-	private static String compareSubstrs(Queue<String> q){
+	
+	
+	
+	//devolve uma substr começada em base com tamanho offset.
+	private static String read(String s, int base, int offset){
 		
-		String key = "";
+		char[] arr = s.toCharArray();
+		String res = "";
+		Queue<Character> q = new LinkedList<Character>();
 		
-		for(int i = 0; i < q.size(); i++){
-			String aux = q.remove();
-			System.out.println(key);
-			for(int j = i + 1; j < q.size(); j++){
-				
-				int cmp = key.compareTo(q.remove());
-				
-				if(cmp == 0) { key = aux; break; }
+		if(offset < 0) throw new IllegalStateException("offset tem que ser positivo!");
+		else if(base > arr.length - 1) throw new IllegalStateException("base fora do array!");
+		
+		else if(base + offset > arr.length)
+		{
+			//n consegui fazer isto recursivo pq n percebo recursão...
+			//ideia: read(s,base,arr.length -1) (=) lê da base até ao fim
+//			System.out.println("ESTAMOS NAQUELE ELSE IF QUE LÊ ATÉ AO FIM!");
+			for(int i = base; i < arr.length; i++){
+				System.out.println(arr[i]);
+				q.add(arr[i]);
 				
 			}
-		}
-		return key;
-	}
-	
-	
-	//devolve uma substring dada uma base e um limite de leitura (um pouco como um fseek)
-	private static String read(char[] arr, int base, int limit){
-		
-		//lê da base até ao indice limite, inclusive
-		
-		if(base + limit > arr.length - 1) throw new IllegalStateException("extensão demasiado longa, fora do array!");
-		
-		else if(limit < base) throw new IllegalStateException("limit tem de ser maior que a base!");
-		
-		else if(base == limit){
-			char[] one = {arr[base]};
-			String res = String.valueOf(one);
-			return res;
+			
+			char[] aux = new char[q.size()];
+			for(int i = 0; i < aux.length; i++){
+				aux[i] = q.remove();
+			}
+			
+			res = String.valueOf(aux);
+			
 		}
 		
-		Queue<Character> s = new LinkedList<Character>();
-		for(int i = base; i <= limit; i++){
-			s.add(arr[i]);
+		
+		else {
+			
+//			System.out.println("AGORA ESTAMOS NO ELSE QUE N TEM IF!");
+		
+		for(int i = base; i < base + offset; i++){
+			//System.out.println("adding: " + arr[i]);
+			q.add(arr[i]);
 		}
 		
-		char[] read = new char[s.size()];
-		for(int i = 0; i < read.length; i++){
-			read[i] = s.remove();
+//		res = q.toString();
+//		System.out.println(res);
+		
+		char[] aux = new char[q.size()];
+		//System.out.println("queue size @read() is: " + q.size());
+		int i = 0;
+		
+		while(q.iterator().hasNext()){
+			aux[i] = q.remove();
+			/*System.out.println(aux[i]);*/ i++;
 		}
 		
-		String res = String.valueOf(read);
+		res = String.valueOf(aux);
+		
+		}
 		return res;
-		
 	}
 	
 	
