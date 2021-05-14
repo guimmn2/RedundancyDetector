@@ -15,7 +15,9 @@ public class RedundancyDetector {
 		
 		char[] s = test.toCharArray();
 	
-		System.out.println(compareSubstrings(s,1,3,2));
+//		System.out.println(compareSubstrings(s,0,2,2));
+		
+		System.out.println(LRSubstring(test));
 		
 		
 		in.close();
@@ -36,10 +38,52 @@ public class RedundancyDetector {
 		if(base2 + size > s.length || base1 + size > s.length) throw new IllegalStateException("Out of bounds!");
 		
 		for(int i = base1; i <= size; i++){
-			System.out.println(s[i] + " " + s[i+size]);
+			System.out.println(s[i] + "" + s[i+size]);
 			if(s[i] != s[i+size]) return false;
 		}
 		return true;	
+	}
+	
+	
+	private static String LRSubstring(String s){
+		return seekLRSubstring(s,0,(int)(s.length()/2));
+	}
+	
+	private static String seekLRSubstring(String s, int base1, int size){
+		
+		char[] aux = s.toCharArray();
+		int N = aux.length;
+		
+		int subSize = size; //o potencial tamanho máximo de uma substring redundante é metade; ex: "baba" -> "ba"
+		int i = base1;
+		int j = i + subSize; //subSize = 3
+		
+		
+		
+		try {
+			while(true){
+			if (compareSubstrings(aux,i,j,subSize)) return foundString(aux,i,subSize);
+			else j++;
+			}
+		} catch(Exception IllegalStateException) {
+			System.out.println("APANHEI A EXCEPÇÃO: " + "VALOR DO J: " + j);
+			if(i != N - (2 * subSize)) { i++; /*System.out.println(i + " " + (N - (2 * subSize) - 1));*/ return seekLRSubstring(s,i,subSize); }
+			else { subSize --; return seekLRSubstring(s,i,subSize); }
+		}
+		
+	}
+	
+	
+	private static String foundString(char[] s,int base, int size){
+		
+		char[] aux = new char[size];
+		
+		for(int i = base; i <= size; i++){
+			aux[i] = s[i];
+		}
+		
+		String res = String.valueOf(aux);
+		return res;
 	}
 	
 }
