@@ -43,7 +43,7 @@ public class RedundancyDetector {
 
 		int j = base2;
 		
-		for(int i = base1; i < base2; i++){
+		for(int i = base1; i <= size && j < s.length; i++){
 			System.out.println("Comparing: " + s[i] + " with " + s[j] );
 			if(s[i] != s[j]) return false;
 			j++;
@@ -87,20 +87,32 @@ public class RedundancyDetector {
 
 	private static String foundString(char[] s,int base, int size){
 
-		int j = 0;
-		System.out.println("ENTREI NA FUNÇÃO FOUND");
+//		Queue<Character> aux = new LinkedList<Character>();
+//		
+//		for(int i = base; i < size; i++){
+//			System.out.println("Adding: " + s[i]);
+//			aux.add(s[i]);
+//			}
+//		
+//		String res = aux.toString();
+//		System.out.println(res);
+//		
+//		return res;
+		
 		char[] aux = new char[size];
-
-		for(int i = base; i < size ; i++){
-			System.out.println("printing: " + String.valueOf(s[i]));
+		int j = 0;
+		
+		for(int i = base; i < size; i++){
+			System.out.println("Printing in aux: " + s[i]);
 			aux[j] = s[i];
-			System.out.println("aux[j]: " + String.valueOf(aux[j]));
+			System.out.println("Saved char: " + aux[j]);
 			j++;
 		}
-				
+		
 		String res = String.valueOf(aux);
-		System.out.println("FOUND: " + res);
+		System.out.println(res);
 		return res;
+
 	}
 
 }
