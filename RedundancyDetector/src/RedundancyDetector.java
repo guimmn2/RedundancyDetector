@@ -42,8 +42,9 @@ public class RedundancyDetector {
 		if(base2 + size > s.length || base1 + size > s.length) throw new IllegalStateException("Out of bounds!");
 
 		int j = base2;
+		int lim = base1 + size - 1;
 		
-		for(int i = base1; i <= size && j < s.length; i++){
+		for(int i = base1; i <= lim && j < s.length; i++){
 			System.out.println("Comparing: " + s[i] + " with " + s[j] );
 			if(s[i] != s[j]) return false;
 			j++;
