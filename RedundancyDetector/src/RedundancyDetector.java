@@ -98,11 +98,13 @@ public class RedundancyDetector {
 //		System.out.println(res);
 //		
 //		return res;
-		
+		System.out.println("ENTREI NO FOUNDSTRING!");
+		System.out.println(String.valueOf(s) + " " + base + " " + size);
 		char[] aux = new char[size];
 		int j = 0;
+		int lim = base + size - 1;
 		
-		for(int i = base; i < size; i++){
+		for(int i = base; i <= lim; i++){
 			System.out.println("Printing in aux: " + s[i]);
 			aux[j] = s[i];
 			System.out.println("Saved char: " + aux[j]);
