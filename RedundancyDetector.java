@@ -1,80 +1,136 @@
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
+//import java.math.*;
 
-class RedundancyDetector {
+public class RedundancyDetector {
 
-	private static int findEqualChar(char[] array_search, char key, int current_index){
-		int i = current_index + 1;
-		while(i <= array_search.length-1){
-			System.out.println("Array_search["+i+"] ="+array_search[i]);
-			if(array_search[i] == key)
-				return i;
-			i++;
+	/* IDEIA GERAL: Dividir String em substrings incrementalmente mais pequenas, começando por dividir ao meio. 
+	 * Começar por comparar primeiro caracter de cada substring resultante e avançar apenas conforme haja um "match" de chars
+	 * caso contrário compara-se com a próxima substring possível e por aí em diante até todos os chars das subs serem iguais
+	 */
+
+//	public static void main(String[] args){
+
+//		Scanner in = new Scanner(System.in);
+//		String test = in.nextLine();
+//
+//
+//		char[] s = test.toCharArray();
+//
+//		//iterateAndCompare(s);
+//		System.out.println(seekLRSubstring(test));
+//
+//		in.close();
+
+	    public static void main(String[] args) throws IOException {
+
+	        File fx = null;
+	        InputStream istream = null;
+	        fx = new File(args[1]);
+	        istream = new FileInputStream(fx);
+	     
+	        try {
+	            
+	    Reader reader = new InputStreamReader(istream);
+	             int c;
+	             while ((c = reader.read()) != -1) {
+	                 if (c == ' ') c = '-';                 // just replace spaces with dash
+	                 System.out.print ((char) c);
+	             }
+	        }
+	        catch (IOException e) {
+	            System.out.println("Oops");
+	        }
+	        
+	    }
+
+
+
+	//compara substrings do mesmo tamanho, caracter a caracter, se forem iguais devolve true.
+	/*
+	 * s = String original convertida em array de chars
+	 * base 1 = indice do inicio da 1ª substring
+	 * base 2 = " da 2ª
+	 * size = tamanho das substrings
+	 */
+	private static boolean compareSubstrings(char[] s, int base1, int base2, int size){
+
+		//if(base2 + size > s.length || base1 + size > s.length) throw new IllegalStateException("Out of bounds!");
+
+		int j = base2;
+		int lim = base1 + size - 1;
+		for(int i = base1; i <= lim && j < s.length; i++){
+			//System.out.println("Comparing: " + s[i] + " with " + s[j] );
+			if(s[i] != s[j]) return false;
+			j++;
 		}
-		return -1;
+		//System.out.println("TRUE");
+		return true;	
 	}
 
-	private static char[] resizeArray(char[] array_resize, int resize_factor){
-		int resized_length = array_resize.length * resize_factor;
-		char[] resizedarray = new char[resized_length];
-		for(int i=0; i < array_resize.length; i++ )
-			resizedarray[i]=array_resize[i];
-		return resizedarray;
-	}
 
-	private static String charStreak(char[] array_search, String higheststring, int highestcount){
-		int count_from_index=0;
-		int fecresult=0;
-		int al = array_search.length;
-		for(int array_index = 0; array_index < al; array_index+=count_from_index){
-			fecresult=array_index;
-			count_from_index=1;
-			while(fecresult < al && fecresult >= 0){
-				fecresult = findEqualChar(array_search, array_search[array_index], fecresult);
-				if(fecresult != -1){
-					System.out.println("Found equal char at "+fecresult+" "+array_search[fecresult]);
-					int tempcount=1;
-					int offset=1;
-					char[] substringchar = new char[4];
-					substringchar[0] = array_search[fecresult];
-					while(fecresult+offset < al && array_index+offset < fecresult && array_index+offset < al && array_search[fecresult+offset]==array_search[array_index+offset]){
-						substringchar[offset]=array_search[array_index+offset];
-						tempcount++;
-						offset++;
-						if(offset == substringchar.length)
-							substringchar = resizeArray(substringchar, 2);
+
+
+	private static String seekLRSubstring(String s){
+
+		String res = "";
+		char[] aux = s.toCharArray();
+		//System.out.println("char array: " + String.valueOf(aux));		
+		int N = aux.length;
+
+		int subSize = (int)(N/2); //o potencial tamanho máximo de uma substring redundante é metade; ex: "baba" -> "ba"
+		//			int i = 0;
+		//			int j = i + subSize; //subSize = 3
+
+		while(subSize >= 1){
+
+			//System.out.println("i, j = " + i + " " + j);
+
+			int lim1 = N - (2 * subSize);
+			int lim2 = N - subSize;
+			
+//			System.out.println("SubSize "+subSize);
+//			System.out.println("lim1 "+lim1);
+//			System.out.println("lim2 "+lim2);
+
+
+			for(int i = 0; i <= lim1; i++){
+				int k = lim2;
+				for(int j = i + subSize; j <= lim2/2+1; j++){
+					//System.out.println("i: "+i+"| j: "+j+"| k: "+k);
+					if(compareSubstrings(aux,i,j,subSize) || compareSubstrings(aux,i,k,subSize)){ 
+						return foundString(aux,i,subSize); 
 					}
-					if(tempcount>count_from_index)
-						count_from_index=tempcount;
-					if(tempcount > highestcount){
-						higheststring = String.valueOf(substringchar);
-						highestcount = tempcount;
-					}
+					k--;	
 				}
 			}
-		}
-		return higheststring;
+		subSize--;
+	}
+	System.out.println("No string found!");
+	return res;
+	
+}
+
+
+private static String foundString(char[] s,int base, int size){
+
+	//System.out.println("ENTREI NO FOUNDSTRING!");
+	//System.out.println(String.valueOf(s) + " " + base + " " + size);
+	char[] aux = new char[size];
+	int j = 0;
+	int lim = base + size - 1;
+
+	for(int i = base; i <= lim; i++){
+		//System.out.println("Printing in aux: " + s[i]);
+		aux[j] = s[i];
+		//System.out.println("Saved char: " + aux[j]);
+		j++;
 	}
 
+	String res = String.valueOf(aux);
+	//System.out.println(res);
+	return res;
 
-	public static void main(String[] args){
-		String s="";
-		String higheststring="";
-		int highestcount = 0;
-		System.out.println("Type something");
-		Scanner in = new Scanner(System.in);
+}
 
-		s = in.nextLine();
-		in.close();
-		char[] mainarray = s.toCharArray();
-
-		// Um pequeno debug sÃ³ para ver se a string foi convertida para char array corretamente
-		for (int i=0; i < mainarray.length; i++)
-			System.out.println("char at "+i+" is "+mainarray[i]);
-
-		System.out.println("Char array length is "+mainarray.length);
-		higheststring = charStreak(mainarray, higheststring, highestcount);
-		higheststring = higheststring.replaceAll("\\s","");
-		System.out.println("Longest redundant string: "+higheststring);
-
-	}
 }
