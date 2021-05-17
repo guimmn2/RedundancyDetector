@@ -9,40 +9,50 @@ public class RedundancyDetector {
 	 * caso contrário compara-se com a próxima substring possível e por aí em diante até todos os chars das subs serem iguais
 	 */
 
-//	public static void main(String[] args){
+	//	public static void main(String[] args){
 
-//		Scanner in = new Scanner(System.in);
-//		String test = in.nextLine();
-//
-//
-//		char[] s = test.toCharArray();
-//
-//		//iterateAndCompare(s);
-//		System.out.println(seekLRSubstring(test));
-//
-//		in.close();
+	//		Scanner in = new Scanner(System.in);
+	//		String test = in.nextLine();
+	//
+	//
+	//		char[] s = test.toCharArray();
+	//
+	//		//iterateAndCompare(s);
+	//		System.out.println(seekLRSubstring(test));
+	//
+	//		in.close();
 
-	    public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {
 
-	        File fx = null;
-	        InputStream istream = null;
-	        fx = new File(args[1]);
-	        istream = new FileInputStream(fx);
-	     
-	        try {
-	            
-	    Reader reader = new InputStreamReader(istream);
-	             int c;
-	             while ((c = reader.read()) != -1) {
-	                 if (c == ' ') c = '-';                 // just replace spaces with dash
-	                 System.out.print ((char) c);
-	             }
-	        }
-	        catch (IOException e) {
-	            System.out.println("Oops");
-	        }
-	        
-	    }
+		File fx = null;
+		InputStream istream = null;
+		fx = new File(args[0]);
+		istream = new FileInputStream(fx);
+		Queue<Character> charutoBoy = new LinkedList<Character>();
+		try {
+
+			Reader reader = new InputStreamReader(istream);
+			int c;
+
+			while ((c = reader.read()) != -1) {
+				if (c == ' ') 
+					c = '-';                 // just replace spaces with dash
+				charutoBoy.add((char) c);
+			}
+		}
+		catch (IOException e) {
+			System.out.println("Oops");
+		}
+		char[] cigarroGirl = new char[charutoBoy.size()];
+		int maço = 0;
+		while(charutoBoy.iterator().hasNext()){
+			cigarroGirl[maço]=charutoBoy.remove();
+			maço++;
+		}
+		String charroJunkie = String.valueOf(cigarroGirl);
+		System.out.println(String.valueOf(cigarroGirl));
+		System.out.println(seekLRSubstring(charroJunkie));
+	}
 
 
 
@@ -88,10 +98,10 @@ public class RedundancyDetector {
 
 			int lim1 = N - (2 * subSize);
 			int lim2 = N - subSize;
-			
-//			System.out.println("SubSize "+subSize);
-//			System.out.println("lim1 "+lim1);
-//			System.out.println("lim2 "+lim2);
+
+			//			System.out.println("SubSize "+subSize);
+			//			System.out.println("lim1 "+lim1);
+			//			System.out.println("lim2 "+lim2);
 
 
 			for(int i = 0; i <= lim1; i++){
@@ -104,33 +114,33 @@ public class RedundancyDetector {
 					k--;	
 				}
 			}
-		subSize--;
-	}
-	System.out.println("No string found!");
-	return res;
-	
-}
+			subSize--;
+		}
+		System.out.println("No string found!");
+		return res;
 
-
-private static String foundString(char[] s,int base, int size){
-
-	//System.out.println("ENTREI NO FOUNDSTRING!");
-	//System.out.println(String.valueOf(s) + " " + base + " " + size);
-	char[] aux = new char[size];
-	int j = 0;
-	int lim = base + size - 1;
-
-	for(int i = base; i <= lim; i++){
-		//System.out.println("Printing in aux: " + s[i]);
-		aux[j] = s[i];
-		//System.out.println("Saved char: " + aux[j]);
-		j++;
 	}
 
-	String res = String.valueOf(aux);
-	//System.out.println(res);
-	return res;
 
-}
+	private static String foundString(char[] s,int base, int size){
+
+		//System.out.println("ENTREI NO FOUNDSTRING!");
+		//System.out.println(String.valueOf(s) + " " + base + " " + size);
+		char[] aux = new char[size];
+		int j = 0;
+		int lim = base + size - 1;
+
+		for(int i = base; i <= lim; i++){
+			//System.out.println("Printing in aux: " + s[i]);
+			aux[j] = s[i];
+			//System.out.println("Saved char: " + aux[j]);
+			j++;
+		}
+
+		String res = String.valueOf(aux);
+		//System.out.println(res);
+		return res;
+
+	}
 
 }
