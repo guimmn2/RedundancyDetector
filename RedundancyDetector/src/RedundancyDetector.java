@@ -3,9 +3,9 @@ import java.util.*;
 
 public class RedundancyDetector {
 
-	/* IDEIA GERAL: Dividir String em sufixos incrementalmente mais pequenas, come√ßando por dividir ao meio.
-	 * Come√ßar por comparar primeiro caracter de cada substring resultante e avan√ßar apenas conforme haja um "match" de chars
-	 * caso contr√°rio compara-se com a pr√≥xima substring poss√≠vel e por a√≠ em diante at√© todos os chars das subs serem iguais
+	/* IDEIA GERAL: Dividir String em substrings incrementalmente mais pequenas, comeÁando por dividir ao meio. 
+	 * ComeÁar por comparar primeiro caracter de cada substring resultante e avanÁar apenas conforme haja um "match" de chars
+	 * caso contr·rio compara-se com a prÛxima substring possÌvel e por aÌ em diante atÈ todos os chars das subs serem iguais
 	 */
 
 	public static void main(String[] args){
@@ -16,31 +16,8 @@ public class RedundancyDetector {
 
 		char[] s = test.toCharArray();
 
-		String[] sufixos = getAllSuffixes(test);
-		Arrays.sort(sufixos);
-
-		for(int i = 0; i < sufixos.length; i++){
-			System.out.println(sufixos[i]);
-		}
-
-		int size = 0;
-		String res = "";
-		System.out.println(res.length());
-
-
-		for(int i = 0; i < sufixos.length; i++){
-			for(int j = i+1; j < sufixos.length; j++){
-				System.out.println("comparing " + sufixos[i] + " with " + sufixos[j]);
-				if(findMatch(sufixos[i], sufixos[j]) == true && sufixos[i].length() > size){
-					res = sufixos[i];
-					System.out.println("saved: " + res);
-					size = sufixos[i].length();
-				}
-			}
-		}
-
-
-		System.out.println("res = " + res);
+		//iterateAndCompare(s);
+		System.out.println(seekLRSubstring(test));
 
 		in.close();
 
@@ -48,35 +25,91 @@ public class RedundancyDetector {
 	}
 
 
-	private static boolean findMatch(String key, String cmp){
+	//compara substrings do mesmo tamanho, caracter a caracter, se forem iguais devolve true.
+	/*
+	 * s = String original convertida em array de chars
+	 * base 1 = indice do inicio da 1™ substring
+	 * base 2 = " da 2™
+	 * size = tamanho das substrings
+	 */
+	private static boolean compareSubstrings(char[] s, int base1, int base2, int size){
 
-		char[] auxKey = key.toCharArray();
-		char[] auxCmp = cmp.toCharArray();
+		//if(base2 + size > s.length || base1 + size > s.length) throw new IllegalStateException("Out of bounds!");
 
-		boolean exists = true;
-
-		for(int i = 0; i < auxKey.length; i++){
-			System.out.println(auxKey[i]);
-			if(auxKey[i] != auxCmp[i]) {
-				exists = false;
-				break;
-			}
+		int j = base2;
+		int lim = base1 + size - 1;
+		for(int i = base1; i <= lim && j < s.length; i++){
+			//System.out.println("Comparing: " + s[i] + " with " + s[j] );
+			if(s[i] != s[j]) return false;
+			j++;
 		}
-		return exists;
+		//System.out.println("TRUE");
+		return true;	
 	}
 
-	private static String[] getAllSuffixes(String og){
 
-		char[] aux = og.toCharArray();
-		String[] sufixos = new String[aux.length];
 
-		for(int i = 0; i < aux.length; i++){
-			char[] aux2 = new char[aux.length-i];
-			for(int j = i; j < aux.length; j++){
-				aux2[j-i] = aux[j];
+
+	private static String seekLRSubstring(String s){
+
+		String res = "";
+		char[] aux = s.toCharArray();
+		//System.out.println("char array: " + String.valueOf(aux));		
+		int N = aux.length;
+
+		int subSize = (int)(N/2); //o potencial tamanho m·ximo de uma substring redundante È metade; ex: "baba" -> "ba"
+		//			int i = 0;
+		//			int j = i + subSize; //subSize = 3
+
+		while(subSize >= 1){
+
+			//System.out.println("i, j = " + i + " " + j);
+
+			int lim1 = N - (2 * subSize);
+			int lim2 = N - subSize;
+			
+//			System.out.println("SubSize "+subSize);
+//			System.out.println("lim1 "+lim1);
+//			System.out.println("lim2 "+lim2);
+
+
+			for(int i = 0; i <= lim1; i++){
+				int k = lim2;
+				for(int j = i + subSize; j <= lim2/2+1; j++){
+					//System.out.println("i: "+i+"| j: "+j+"| k: "+k);
+					if(compareSubstrings(aux,i,j,subSize) || compareSubstrings(aux,i,k,subSize)){ 
+						return foundString(aux,i,subSize); 
+					}
+					k--;	
+				}
 			}
-			sufixos[i]= String.valueOf(aux2);
-		}
-		return sufixos;
+		subSize--;
 	}
+	System.out.println("No string found!");
+	return res;
+	
+}
+
+
+private static String foundString(char[] s,int base, int size){
+
+	//System.out.println("ENTREI NO FOUNDSTRING!");
+	//System.out.println(String.valueOf(s) + " " + base + " " + size);
+	char[] aux = new char[size];
+	int j = 0;
+	int lim = base + size - 1;
+
+	for(int i = base; i <= lim; i++){
+		//System.out.println("Printing in aux: " + s[i]);
+		aux[j] = s[i];
+		//System.out.println("Saved char: " + aux[j]);
+		j++;
+	}
+
+	String res = String.valueOf(aux);
+	//System.out.println(res);
+	return res;
+
+}
+
 }
