@@ -16,12 +16,26 @@ public class RedundancyDetector {
 
 		char[] s = test.toCharArray();
 		
-		String[] subStrings = getAllSubstrings(test);
+		String[] subStrings = getAllSuffixes(test);
 		Arrays.sort(subStrings);
 		
 		for(int i = 0; i < subStrings.length; i++){
 			System.out.println(subStrings[i]);
 		}
+		
+		int size = 0;
+		String res = "";
+		System.out.println(res.length());
+		
+		for(int i = 0; i < subStrings.length; i++){
+			for(int j = 0; j < subStrings.length; j++){
+				if(findMatch(subStrings[i], subStrings[j]) && subStrings[i].length() > size){
+					 res = subStrings[i];
+				}
+			}
+		}
+		
+		System.out.println(res);
 
 		in.close();
 
@@ -29,30 +43,24 @@ public class RedundancyDetector {
 	}
 
 
-	//compara substrings do mesmo tamanho, caracter a caracter, se forem iguais devolve true.
-	/*
-	 * s = String original convertida em array de chars
-	 * base 1 = indice do inicio da 1ª substring
-	 * base 2 = " da 2ª
-	 * size = tamanho das substrings
-	 */
-	private static boolean compareSubstrings(char[] s, int base1, int base2, int size){
-
-		//if(base2 + size > s.length || base1 + size > s.length) throw new IllegalStateException("Out of bounds!");
-
-		int j = base2;
-		int lim = base1 + size - 1;
-
-		for(int i = base1; i <= lim && j < s.length; i++){
-			//System.out.println("Comparing: " + s[i] + " with " + s[j] );
-			if(s[i] != s[j]) return false;
-			j++;
+	private static boolean findMatch(String key, String cmp){
+		
+		char[] auxKey = key.toCharArray();
+		char[] auxCmp = cmp.toCharArray();
+		
+		boolean exists = true;
+		
+		for(int i = 0; i < auxKey.length; i++){
+			if(auxKey[i] != auxCmp[i]) {
+				exists = false;
+				break;
+			}
 		}
-		//System.out.println("TRUE");
-		return true;	
+		return exists;
 	}
 
-	private static String[] getAllSubstrings(String og){
+
+	private static String[] getAllSuffixes(String og){
 		
 		char[] aux = og.toCharArray();
 		Queue<Character> q = new LinkedList<Character>();
