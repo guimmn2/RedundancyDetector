@@ -27,15 +27,20 @@ public class RedundancyDetector {
 		String res = "";
 		System.out.println(res.length());
 		
+
 		for(int i = 0; i < subStrings.length; i++){
-			for(int j = 0; j < subStrings.length; j++){
-				if(findMatch(subStrings[i], subStrings[j]) && subStrings[i].length() > size){
-					 res = subStrings[i];
+			for(int j = i+1; j < subStrings.length; j++){
+				System.out.println("comparing " + subStrings[i] + " with " + subStrings[j]);
+				if(findMatch(subStrings[i], subStrings[j]) == true && subStrings[i].length() > size){
+					res = subStrings[i];
+					System.out.println("saved: " + res);
+					size = subStrings[i].length();
 				}
 			}
 		}
 		
-		System.out.println(res);
+		
+		System.out.println("res = " + res);
 
 		in.close();
 
@@ -51,6 +56,7 @@ public class RedundancyDetector {
 		boolean exists = true;
 		
 		for(int i = 0; i < auxKey.length; i++){
+			//System.out.println(auxKey[i]);
 			if(auxKey[i] != auxCmp[i]) {
 				exists = false;
 				break;
