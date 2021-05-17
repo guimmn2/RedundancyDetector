@@ -3,7 +3,7 @@ import java.util.*;
 
 public class RedundancyDetector {
 
-	/* IDEIA GERAL: Dividir String em substrings incrementalmente mais pequenas, começando por dividir ao meio. 
+	/* IDEIA GERAL: Dividir String em sufixos incrementalmente mais pequenas, começando por dividir ao meio.
 	 * Começar por comparar primeiro caracter de cada substring resultante e avançar apenas conforme haja um "match" de chars
 	 * caso contrário compara-se com a próxima substring possível e por aí em diante até todos os chars das subs serem iguais
 	 */
@@ -15,31 +15,31 @@ public class RedundancyDetector {
 
 
 		char[] s = test.toCharArray();
-		
-		String[] subStrings = getAllSuffixes(test);
-		Arrays.sort(subStrings);
-		
-		for(int i = 0; i < subStrings.length; i++){
-			System.out.println(subStrings[i]);
+
+		String[] sufixos = getAllSuffixes(test);
+		Arrays.sort(sufixos);
+
+		for(int i = 0; i < sufixos.length; i++){
+			System.out.println(sufixos[i]);
 		}
-		
+
 		int size = 0;
 		String res = "";
 		System.out.println(res.length());
-		
 
-		for(int i = 0; i < subStrings.length; i++){
-			for(int j = i+1; j < subStrings.length; j++){
-				System.out.println("comparing " + subStrings[i] + " with " + subStrings[j]);
-				if(findMatch(subStrings[i], subStrings[j]) == true && subStrings[i].length() > size){
-					res = subStrings[i];
+
+		for(int i = 0; i < sufixos.length; i++){
+			for(int j = i+1; j < sufixos.length; j++){
+				System.out.println("comparing " + sufixos[i] + " with " + sufixos[j]);
+				if(findMatch(sufixos[i], sufixos[j]) == true && sufixos[i].length() > size){
+					res = sufixos[i];
 					System.out.println("saved: " + res);
-					size = subStrings[i].length();
+					size = sufixos[i].length();
 				}
 			}
 		}
-		
-		
+
+
 		System.out.println("res = " + res);
 
 		in.close();
@@ -49,14 +49,14 @@ public class RedundancyDetector {
 
 
 	private static boolean findMatch(String key, String cmp){
-		
+
 		char[] auxKey = key.toCharArray();
 		char[] auxCmp = cmp.toCharArray();
-		
+
 		boolean exists = true;
-		
+
 		for(int i = 0; i < auxKey.length; i++){
-			//System.out.println(auxKey[i]);
+			System.out.println(auxKey[i]);
 			if(auxKey[i] != auxCmp[i]) {
 				exists = false;
 				break;
@@ -65,30 +65,18 @@ public class RedundancyDetector {
 		return exists;
 	}
 
-
 	private static String[] getAllSuffixes(String og){
-		
-		char[] aux = og.toCharArray();
-		Queue<Character> q = new LinkedList<Character>();
-		Queue<String> qS = new LinkedList<String>();
-		
-		for(int i = 0; i < aux.length; i++){
-			for(int j = i; j < aux.length; j++){
-				q.add(aux[j]);
-			}
-			char[] temp = new char[q.size()];
-			for(int k = 0; k < temp.length; k++){
-				temp[k] = q.remove();
-			}
-			String tempRes = String.valueOf(temp);
-			qS.add(tempRes);
-		}
-		String[] res = new String[qS.size()]; //deve haver uma forma de calcular isto tudo sem ser necessário queues
-		for(int i = 0; i < res.length; i++){
-			res[i] = qS.remove();
-		}
-		
-		return res;
-	}
 
+		char[] aux = og.toCharArray();
+		String[] sufixos = new String[aux.length];
+
+		for(int i = 0; i < aux.length; i++){
+			char[] aux2 = new char[aux.length-i];
+			for(int j = i; j < aux.length; j++){
+				aux2[j-i] = aux[j];
+			}
+			sufixos[i]= String.valueOf(aux2);
+		}
+		return sufixos;
+	}
 }
