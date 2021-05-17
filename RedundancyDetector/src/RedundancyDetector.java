@@ -16,8 +16,12 @@ public class RedundancyDetector {
 
 		char[] s = test.toCharArray();
 		
-		//iterateAndCompare(s);
-		System.out.println(seekLRSubstring(test));
+		String[] subStrings = getAllSubstrings(test);
+		Arrays.sort(subStrings);
+		
+		for(int i = 0; i < subStrings.length; i++){
+			System.out.println(subStrings[i]);
+		}
 
 		in.close();
 
@@ -48,99 +52,29 @@ public class RedundancyDetector {
 		return true;	
 	}
 
-
-//	private static String iterateAndCompare(char[] arr){
-//		
-//		String res = "";
-//		int size = (int)(arr.length/2);
-//		int limit = size;
-//
-//		while(size > 1){
-//			for(int i = 0; i != limit; i++){
-//				for(int j = i + size; j < arr.length - size; j++){
-//					
-//					System.out.println("i,j = " + i + " " + j);
-////					if(compareSubstrings(arr,i,j,size)) res = foundString(arr,i,size);
-//					System.out.println("cheguei aqui!");
-//				}
-//				limit = i + size - 1;
-//			}
-//			size --;
-//		}
-//		return res;
-//	}
-
-
-
-		private static String seekLRSubstring(String s){
-	
-			String res = "";
-			char[] aux = s.toCharArray();
-			//System.out.println("char array: " + String.valueOf(aux));		
-			int N = aux.length;
-	
-			int subSize = (int)(N/2); //o potencial tamanho máximo de uma substring redundante é metade; ex: "baba" -> "ba"
-//			int i = 0;
-//			int j = i + subSize; //subSize = 3
-			
-			while(subSize >= 1){
-				
-				//System.out.println("i, j = " + i + " " + j);
-				
-				int lim1 = N - (2 * subSize);
-				int lim2 = N - subSize;
-				
-				for(int i = 0; i <= lim1; i++){
-					for(int j = i + subSize; j <= lim2; j++){
-						//System.out.println("i, j = " + i + " " + j);
-						//System.out.println("SIZE IS: " + subSize);
-						if(compareSubstrings(aux,i,j,subSize)){ return foundString(aux,i,subSize); }
-					}
-				}
-				subSize--;
+	private static String[] getAllSubstrings(String og){
+		
+		char[] aux = og.toCharArray();
+		Queue<Character> q = new LinkedList<Character>();
+		Queue<String> qS = new LinkedList<String>();
+		
+		for(int i = 0; i < aux.length; i++){
+			for(int j = i; j < aux.length; j++){
+				q.add(aux[j]);
 			}
-			return res;
-//			try{
-//				while(true){
-//					
-//					if(compareSubstrings(aux,i,j,subSize)) return foundString(aux,i,subSize);
-//					j++;
-//				}
-//				
-//			} catch(Exception e){
-//				
-//					while(i != N - (2 * subSize)){
-//						i++;
-//						for(int k = j; k < N - subSize; j++){
-//							if(compareSubstrings(aux,i,j,subSize)) return foundString(aux,i,subSize);
-//						}
-//					}
-//					subSize --;
-//					i = 0;
-//			}
-	
+			char[] temp = new char[q.size()];
+			for(int k = 0; k < temp.length; k++){
+				temp[k] = q.remove();
+			}
+			String tempRes = String.valueOf(temp);
+			qS.add(tempRes);
 		}
-
-
-	private static String foundString(char[] s,int base, int size){
-
-		//System.out.println("ENTREI NO FOUNDSTRING!");
-		//System.out.println(String.valueOf(s) + " " + base + " " + size);
-		char[] aux = new char[size];
-		int j = 0;
-		int lim = base + size - 1;
-
-		for(int i = base; i <= lim; i++){
-			//System.out.println("Printing in aux: " + s[i]);
-			aux[j] = s[i];
-			//System.out.println("Saved char: " + aux[j]);
-			j++;
+		String[] res = new String[qS.size()]; //deve haver uma forma de calcular isto tudo sem ser necessário queues
+		for(int i = 0; i < res.length; i++){
+			res[i] = qS.remove();
 		}
-
-		String res = String.valueOf(aux);
-		//System.out.println(res);
+		
 		return res;
-
 	}
 
 }
